@@ -20,7 +20,7 @@ public class CRUDRepository implements ICRUDRepository {
 	private static final String updateSql = "UPDATE user SET name = ?,username = ?,password = ?,email = ?,mobile = ?,role = ?,business_id = ? WHERE id = ?";
 	private static final String deleteSql = "UPDATE user SET is_deleted = 'Y' WHERE id = ?";
 	private static final String insertSql = "INSERT INTO user(name,username,password,email,mobile,role,business_id) VALUES(?,?,?,?,?,?,?)";
-	private static final String selectSql = "SELECT * FROM user WHERE is_deleted='N' ";
+	private static final String selectSql = "SELECT * FROM \"user\" WHERE is_deleted='N' ";
 			
 	@Autowired
 	@Qualifier("mysqlTemplate")
