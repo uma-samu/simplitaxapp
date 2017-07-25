@@ -1,0 +1,11 @@
+server:
+  port: 8181
+
+---
+spring:
+  datasource:
+      dev:
+         driver-class-name: com.mysql.jdbc.Driver
+         url: jdbc:mysql://localhost:3344/gst_v1
+         username: root
+         password: root
