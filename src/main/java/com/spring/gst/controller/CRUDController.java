@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spring.gst.model.ResponseObject;
 import com.spring.gst.model.User;
 import com.spring.gst.service.ICRUDService;
+import com.spring.gst.util.ResponseUserUtil;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -67,4 +69,10 @@ public class CRUDController {
 		return new ResponseEntity<Object>(status);
 	}
 	
+	@RequestMapping(value="/user/test",method=RequestMethod.GET)
+	public ResponseEntity<?> testUser()
+	{
+		ResponseObject res = ResponseUserUtil.createResponseUser();
+		return new ResponseEntity<ResponseObject>(res,HttpStatus.OK);
+	}
 }

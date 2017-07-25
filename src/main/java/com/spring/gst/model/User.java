@@ -15,6 +15,14 @@ public class User implements Serializable{
 	private String role;
 	private String businessId;
 	
+	public User(){}
+	
+	public User(String id,String name,String user,String email){
+		this.id=id;
+		this.name=name;
+		this.username=user;
+		this.email=email;
+	}
 	
 	public String getName() {
 		return name;
