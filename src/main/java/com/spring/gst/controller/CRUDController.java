@@ -5,11 +5,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spring.gst.model.GSTR1_Invoice;
 import com.spring.gst.model.ResponseObject;
 import com.spring.gst.model.User;
 import com.spring.gst.service.ICRUDService;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @RestController
 @RequestMapping("/crud")
+@CrossOrigin(origins="http://localhost:4200")
 public class CRUDController {
 
 	@Autowired
@@ -74,5 +77,12 @@ public class CRUDController {
 	{
 		ResponseObject res = ResponseUserUtil.createResponseUser();
 		return new ResponseEntity<ResponseObject>(res,HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/gstr1/b2b",method=RequestMethod.GET)
+	public ResponseEntity<?> getB2bGstr1Invoice()
+	{
+		List<GSTR1_Invoice> invoices = crudService.getAllB2bs();
+		return new ResponseEntity<List<GSTR1_Invoice>>(invoices,HttpStatus.OK);
 	}
 }
