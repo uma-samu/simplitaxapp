@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spring.gst.model.GSTR1InvoiceResponse;
 import com.spring.gst.model.GSTR1_Invoice;
 import com.spring.gst.model.ResponseObject;
 import com.spring.gst.model.User;
@@ -83,6 +84,11 @@ public class CRUDController {
 	public ResponseEntity<?> getB2bGstr1Invoice()
 	{
 		List<GSTR1_Invoice> invoices = crudService.getAllB2bs();
-		return new ResponseEntity<List<GSTR1_Invoice>>(invoices,HttpStatus.OK);
+		GSTR1InvoiceResponse response = new GSTR1InvoiceResponse();
+		
+		response.setSuccess("true");
+		response.setInvoices(invoices);
+		
+		return new ResponseEntity<GSTR1InvoiceResponse>(response,HttpStatus.OK);
 	}
 }
