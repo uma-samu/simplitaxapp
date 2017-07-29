@@ -39,5 +39,18 @@ public class CRUDService implements ICRUDService {
 	public List<GSTR1_Invoice> getAllB2bs() {
 		return crudRepository.getAllB2bs();
 	}
+	
+	public int addB2b(GSTR1_Invoice invoice){
+		return crudRepository.addB2b(invoice);
+	}
+	
+	public int removeB2b(String invoiceNum,String itemSerialNo){
+		return crudRepository.removeB2b(invoiceNum,itemSerialNo);
+	}
+
+	@Override
+	public List<GSTR1_Invoice> getB2bsByCriteria(String criteria,String value) {
+		return crudRepository.getB2bsByCriteria(criteria,value);
+	}
 
 }

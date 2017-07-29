@@ -19,10 +19,11 @@ import com.spring.gst.service.ICRUDService;
 import com.spring.gst.util.ResponseUserUtil;
 
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/crud")
-@CrossOrigin(origins="http://localhost:4200")
+@CrossOrigin(origins={"http://localhost:4200","*"})
 public class CRUDController {
 
 	@Autowired
@@ -89,6 +90,44 @@ public class CRUDController {
 		response.setSuccess("true");
 		response.setInvoices(invoices);
 		
+		return new ResponseEntity<GSTR1InvoiceResponse>(response,HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/gstr1/b2b/filter",method=RequestMethod.GET)
+	public ResponseEntity<?> getB2bGstr1InvoiceByCriteria(@RequestParam(value="criteria", required=false) String criteria,
+															@RequestParam(value="value", required=false) String value)
+	{
+		List<GSTR1_Invoice> invoices = crudService.getB2bsByCriteria(criteria,value);
+		GSTR1InvoiceResponse response = new GSTR1InvoiceResponse();
+		
+		response.setSuccess("true");
+		response.setInvoices(invoices);
+		
+		return new ResponseEntity<GSTR1InvoiceResponse>(response,HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/gstr1/b2b/add",method=RequestMethod.POST)
+	public ResponseEntity<?> addB2bGstr1Invoice(@RequestBody GSTR1_Invoice invoice)
+	{
+		int row = crudService.addB2b(invoice);
+		GSTR1InvoiceResponse response = new GSTR1InvoiceResponse();
+		if(row>0)
+			response.setSuccess("true");
+		else
+			response.setSuccess("false");
+		return new ResponseEntity<GSTR1InvoiceResponse>(response,HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/gstr1/b2b/delete",method=RequestMethod.DELETE)
+	public ResponseEntity<?> deleteB2bGstr1Invoice(@RequestParam(value="invoiceNum",required=true) String invoiceNum,
+													@RequestParam(value="itemSerialNo",required=true) String itemSerialNo)
+	{
+		int row = crudService.removeB2b(invoiceNum,itemSerialNo);
+		GSTR1InvoiceResponse response = new GSTR1InvoiceResponse();
+		if(row>0)
+			response.setSuccess("true");
+		else
+			response.setSuccess("false");
 		return new ResponseEntity<GSTR1InvoiceResponse>(response,HttpStatus.OK);
 	}
 }
