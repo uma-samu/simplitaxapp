@@ -24,8 +24,8 @@ public class CRUDRepository implements ICRUDRepository {
 	private static final String insertSql = "INSERT INTO user(name,username,password,email,mobile,role,business_id) VALUES(?,?,?,?,?,?,?)";
 	private static final String selectSql = "SELECT * FROM \"user\" WHERE is_deleted='N' ";
 	private static final String selectInvoicesSql = "SELECT * FROM \"b2b_invoice_gstr1\" ";
-	private static final String INSERT_B2B_INVOICE_SQL = "INSERT INTO b2b_invoice_gstr1(invoice_num, invoice_date, invoice_value, item_serial_no, item_type, item_hsn_sac_code, place_of_supply, reverse_charge, provisional_assessment, order_no, order_date, e_commerce_gstin, item_taxable_value, item_igst_rate, item_igst_amount, item_cgst_rate, item_cgst_amount, item_sgst_rate, item_sgst_amount, item_cess_rate, item_cess_amount, gstr1_id, gstin) "
-														+ "	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String INSERT_B2B_INVOICE_SQL = "INSERT INTO b2b_invoice_gstr1(invoice_num, invoice_date, invoice_value, place_of_supply, reverse_charge, provisional_assessment, order_no, order_date, e_commerce_gstin,item_serial_no, item_type, item_hsn_sac_code, item_taxable_value, item_igst_rate, item_igst_amount, item_cgst_rate, item_cgst_amount, item_sgst_rate, item_sgst_amount, item_cess_rate, item_cess_amount, gstr1_id, gstin) "
+														+ "	VALUES (?, to_timestamp(?, 'DD/MM/YYYY HH24:MI:SS'), ?, ?, ?, ?, ?, to_timestamp(?, 'DD/MM/YYYY HH24:MI:SS'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	private static final String DELETE_B2B_INVOICE_SQL = "DELETE FROM b2b_invoice_gstr1 where gstr1_id IN (SELECT id FROM GSRT1 where status =\"Pending\" ) AND invoice_num =? AND item_serial_no=?";			
 	@Autowired
 	@Qualifier("mysqlTemplate")
@@ -113,14 +113,13 @@ public class CRUDRepository implements ICRUDRepository {
 		});
 		return invoices;
 	}
-
 	@Override
 	@Transactional
-	public int addB2b(GSTR1_Invoice invoice) {
-		int row = jdbc.update(INSERT_B2B_INVOICE_SQL, new Object[]{invoice.getInvoice_num(),invoice.getInvoice_date(),invoice.getInvoice_value(),invoice.getPlace_of_supply(),invoice.getReverse_charge(),invoice.getProvisional_assessment(),
-																	  invoice.getOrder_no(),invoice.getOrder_date(),invoice.getE_commerce_gstin(),invoice.getItem_serial_no(),invoice.getItem_type(),invoice.getItem_hsn_sac_code(),invoice.getItem_taxable_value(),
-																	  invoice.getItem_igst_rate(),invoice.getItem_igst_amount(),invoice.getItem_cgst_rate(),invoice.getItem_cgst_amount(),invoice.getItem_sgst_rate(),invoice.getItem_sgst_amount(),
-																	  invoice.getItem_cess_rate(),invoice.getItem_cess_amount(),invoice.getGstr1_id(),invoice.getGstin()});	
+	public int addB2b(GSTR1_Invoice invoice) {	
+		int row = jdbc.update(INSERT_B2B_INVOICE_SQL, new Object[]{invoice.getInvoice_num(),invoice.getInvoice_date(),Double.parseDouble(invoice.getInvoice_value()),Integer.parseInt(invoice.getPlace_of_supply()),invoice.getReverse_charge(),invoice.getProvisional_assessment(),
+																	  invoice.getOrder_no(),invoice.getOrder_date(),invoice.getE_commerce_gstin(),Integer.parseInt(invoice.getItem_serial_no()),invoice.getItem_type(),invoice.getItem_hsn_sac_code(),Double.parseDouble(invoice.getItem_taxable_value()),
+																	  Double.parseDouble(invoice.getItem_igst_rate()),Double.parseDouble(invoice.getItem_igst_amount()),Double.parseDouble(invoice.getItem_cgst_rate()),Double.parseDouble(invoice.getItem_cgst_amount()),Double.parseDouble(invoice.getItem_sgst_rate()),Double.parseDouble(invoice.getItem_sgst_amount()),
+																	  Double.parseDouble(invoice.getItem_cess_rate()),Double.parseDouble(invoice.getItem_cess_amount()),Integer.parseInt(invoice.getGstr1_id()),invoice.getGstin()});	
 		return row;
 	}
 	
