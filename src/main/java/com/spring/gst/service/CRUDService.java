@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spring.gst.model.GSTR1_Invoice;
+import com.spring.gst.model.GSTR1_Invoice_Nw;
 import com.spring.gst.model.User;
 import com.spring.gst.repository.ICRUDRepository;
 
@@ -52,5 +53,29 @@ public class CRUDService implements ICRUDService {
 	public List<GSTR1_Invoice> getB2bsByCriteria(String criteria,String value) {
 		return crudRepository.getB2bsByCriteria(criteria,value);
 	}
+
+	// new 
+	
+	@Override
+	public List<GSTR1_Invoice_Nw> getAllB2bs1() {
+		return crudRepository.getAllB2bs1();
+	}
+
+	@Override
+	public List<GSTR1_Invoice_Nw> getB2bsByCriteria1(String criteria, String value) {
+		return crudRepository.getB2bsByCriteria1(criteria, value);
+	}
+
+	@Override
+	public int addB2b1(GSTR1_Invoice_Nw invoice) {
+		return crudRepository.addB2b1(invoice);
+	}
+
+	@Override
+	public int removeB2b1(String invoiceNum) {
+		return crudRepository.removeB2b1(invoiceNum);
+	}
+	
+	//new
 
 }
