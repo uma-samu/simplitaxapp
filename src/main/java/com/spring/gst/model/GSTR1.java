@@ -3,17 +3,11 @@ package com.spring.gst.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
-@Entity
-@Table(name = "gstr1_new")
 public class GSTR1 implements Serializable{
 
 
 	private static final long serialVersionUID = 1L;
-	@Id
 	private int id;
 	private Date for_period;
 	private String status;
