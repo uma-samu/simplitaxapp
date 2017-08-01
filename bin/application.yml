@@ -4,9 +4,10 @@ server:
 
 spring:
   datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://ec2-54-243-252-232.compute-1.amazonaws.com:5432/df3viq0a11seij?sslmode=require
-    username: cnmuvhvnbgoxvg
-    password: c3c58dedc95aafc27a8891fa4b93459306240ff7b610344b7b0d5881cab77bed
+    heroku:
+      driver-class-name: org.postgresql.Driver
+      url: jdbc:postgresql://ec2-54-243-252-232.compute-1.amazonaws.com:5432/df3viq0a11seij?sslmode=require
+      username: cnmuvhvnbgoxvg
+      password: c3c58dedc95aafc27a8891fa4b93459306240ff7b610344b7b0d5881cab77bed
     
     

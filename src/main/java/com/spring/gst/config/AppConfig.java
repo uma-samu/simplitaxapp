@@ -15,7 +15,7 @@ public class AppConfig {
 	
 	@Bean(name="mysqlDS")
 //	@ConfigurationProperties(value="spring.datasource.dev")
-	@ConfigurationProperties(value="spring.datasource")
+	@ConfigurationProperties(value="spring.datasource.heroku")
 	public DataSource mysqlDataSource(){
 		return DataSourceBuilder.create().build();
 	}
