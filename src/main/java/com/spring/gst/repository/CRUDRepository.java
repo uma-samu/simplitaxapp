@@ -192,7 +192,7 @@ public class CRUDRepository implements ICRUDRepository {
 		String anyCriteiaSql = "";
 		
 		//invoices submitted within a date range
-		if(criteria.contains("_date") && value2 != null && "".equals(value2))
+		if(criteria.contains("_date") && value2 != null && !("".equals(value2)))
 		{
 			value = " to_date('"+value+"','dd-MM-yyyy') AND to_date('"+value2+"','dd-MM-yyyy')";
 			
