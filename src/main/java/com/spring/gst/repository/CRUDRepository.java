@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.spring.gst.constant.SqlConstants;
 import com.spring.gst.model.GSTR1_Invoice;
 import com.spring.gst.model.GSTR1_Invoice_Nw;
 import com.spring.gst.model.InvoiceItemNw;
@@ -24,24 +25,6 @@ import com.spring.gst.model.User;
 @Repository
 public class CRUDRepository implements ICRUDRepository {
 
-	private static final String updateSql = "UPDATE user SET name = ?,username = ?,password = ?,email = ?,mobile = ?,role = ?,business_id = ? WHERE id = ?";
-	private static final String deleteSql = "UPDATE user SET is_deleted = 'Y' WHERE id = ?";
-	private static final String insertSql = "INSERT INTO user(name,username,password,email,mobile,role,business_id) VALUES(?,?,?,?,?,?,?)";
-	private static final String selectSql = "SELECT * FROM \"user\" WHERE is_deleted='N' ";
-	private static final String selectInvoicesSql = "SELECT * FROM \"b2b_invoice_gstr1\" ";
-	private static final String INSERT_B2B_INVOICE_SQL = "INSERT INTO b2b_invoice_gstr1(invoice_num, invoice_date, invoice_value, place_of_supply, reverse_charge, provisional_assessment, order_no, order_date, e_commerce_gstin,item_serial_no, item_type, item_hsn_sac_code, item_taxable_value, item_igst_rate, item_igst_amount, item_cgst_rate, item_cgst_amount, item_sgst_rate, item_sgst_amount, item_cess_rate, item_cess_amount, gstr1_id, gstin) "
-														+ "	VALUES (?, to_timestamp(?, 'DD/MM/YYYY HH24:MI:SS'), ?, ?, ?, ?, ?, to_timestamp(?, 'DD/MM/YYYY HH24:MI:SS'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	private static final String DELETE_B2B_INVOICE_SQL = "DELETE FROM b2b_invoice_gstr1 where gstr1_id IN (SELECT id FROM GSTR1 where status = 'Pending' ) AND invoice_num =? AND item_serial_no=?";			
-	
-	private static final String selectInvoicesSql1 = "SELECT * FROM b2b_invoice_gstr1_new ";
-	private static final String selectInvoicesSql2 = "SELECT * FROM invoice_items ";
-	private static final String selectInvoicesSql3 = "SELECT type,hsn_sac_code FROM items WHERE id = ?";
-	private static final String INSERT_B2B_INVOICE_SQL1 = "INSERT INTO b2b_invoice_gstr1_new(invoice_num, invoice_date, invoice_value, place_of_supply, reverse_charge, provisional_assessment, order_no, order_date, e_commerce_gstin,taxable_value,igst_amount,cgst_amount,sgst_amount,cess_amount, gstr1_id, gstin) "
-			+ "	VALUES (?, to_date(?, 'DD-MM-YYYY'), ?, ?, ?, ?, ?, to_date(?, 'DD-MM-YYYY'), ?, ?, ?, ?, ?, ?, ?, ?)";
-	private static final String INSERT_B2B_INVOICE_SQL2 = "INSERT INTO invoice_items(invoice_num, serial_no, item_id, taxable_value, igst_rate, igst_amount, cgst_rate, cgst_amount,sgst_rate, sgst_amount,cess_rate,cess_amount ) "
-			+ "	VALUES (?, ?, (SELECT id FROM items WHERE type = ? AND hsn_sac_code = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	private static final String DELETE_B2B_INVOICE_SQL1 = "DELETE FROM b2b_invoice_gstr1_new WHERE gstr1_id IN (SELECT id FROM gstr1 WHERE status = 'Pending' ) AND invoice_num = ?";			
-	
 	@Autowired
 	@Qualifier("mysqlTemplate")
 	private JdbcTemplate jdbc;
@@ -49,7 +32,7 @@ public class CRUDRepository implements ICRUDRepository {
 	@Override
 	public List<User> getAllUsers() {
 		List<User> users = new ArrayList<User>();
-		users = jdbc.query(selectSql, new RowMapper<User>(){
+		users = jdbc.query(SqlConstants.SELECT_SQL, new RowMapper<User>(){
 
 			@Override
 			public User mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -72,19 +55,19 @@ public class CRUDRepository implements ICRUDRepository {
 
 	@Override
 	public int addUser(User user) {
-		int rows = jdbc.update(insertSql, new Object[]{user.getName(),user.getUsername(),user.getPassword(),user.getEmail(),user.getMobile(),user.getRole(),user.getBusinessId()});
+		int rows = jdbc.update(SqlConstants.INSERT_SQL, new Object[]{user.getName(),user.getUsername(),user.getPassword(),user.getEmail(),user.getMobile(),user.getRole(),user.getBusinessId()});
 		return rows;
 	}
 
 	@Override
 	public int updateUser(User user) {
-		int rows = jdbc.update(updateSql, new Object[]{user.getName(),user.getUsername(),user.getPassword(),user.getEmail(),user.getMobile(),user.getRole(),user.getBusinessId(),user.getId()});
+		int rows = jdbc.update(SqlConstants.UPDATE_SQL, new Object[]{user.getName(),user.getUsername(),user.getPassword(),user.getEmail(),user.getMobile(),user.getRole(),user.getBusinessId(),user.getId()});
 		return rows;
 	}
 
 	@Override
 	public int deleteUser(String id) {
-		int rows = jdbc.update(deleteSql, new Object[]{id});
+		int rows = jdbc.update(SqlConstants.DELETE_SQL, new Object[]{id});
 		return rows;
 	}
 
@@ -93,7 +76,7 @@ public class CRUDRepository implements ICRUDRepository {
 		// TODO Auto-generated method stub
 		
 		List<GSTR1_Invoice> invoices = new ArrayList<GSTR1_Invoice>();
-		invoices = jdbc.query(selectInvoicesSql, new RowMapper<GSTR1_Invoice>(){
+		invoices = jdbc.query(SqlConstants.SELECT_INVOICES_SQL, new RowMapper<GSTR1_Invoice>(){
 
 			@Override
 			public GSTR1_Invoice mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -131,7 +114,7 @@ public class CRUDRepository implements ICRUDRepository {
 	@Override
 	@Transactional
 	public int addB2b(GSTR1_Invoice invoice) {	
-		int row = jdbc.update(INSERT_B2B_INVOICE_SQL, new Object[]{invoice.getInvoice_num(),invoice.getInvoice_date(),Double.parseDouble(invoice.getInvoice_value()),Integer.parseInt(invoice.getPlace_of_supply()),invoice.getReverse_charge(),invoice.getProvisional_assessment(),
+		int row = jdbc.update(SqlConstants.INSERT_B2B_INVOICE_SQL, new Object[]{invoice.getInvoice_num(),invoice.getInvoice_date(),Double.parseDouble(invoice.getInvoice_value()),Integer.parseInt(invoice.getPlace_of_supply()),invoice.getReverse_charge(),invoice.getProvisional_assessment(),
 																	  invoice.getOrder_no(),invoice.getOrder_date(),invoice.getE_commerce_gstin(),Integer.parseInt(invoice.getItem_serial_no()),invoice.getItem_type(),invoice.getItem_hsn_sac_code(),Double.parseDouble(invoice.getItem_taxable_value()),
 																	  Double.parseDouble(invoice.getItem_igst_rate()),Double.parseDouble(invoice.getItem_igst_amount()),Double.parseDouble(invoice.getItem_cgst_rate()),Double.parseDouble(invoice.getItem_cgst_amount()),Double.parseDouble(invoice.getItem_sgst_rate()),Double.parseDouble(invoice.getItem_sgst_amount()),
 																	  Double.parseDouble(invoice.getItem_cess_rate()),Double.parseDouble(invoice.getItem_cess_amount()),Integer.parseInt(invoice.getGstr1_id()),invoice.getGstin()});	
@@ -140,14 +123,14 @@ public class CRUDRepository implements ICRUDRepository {
 	
 	public int removeB2b(String invoiceNum,String itemSerialNo)
 	{
-		int row = jdbc.update(DELETE_B2B_INVOICE_SQL,new Object[]{invoiceNum, itemSerialNo,});
+		int row = jdbc.update(SqlConstants.DELETE_B2B_INVOICE_SQL,new Object[]{invoiceNum, itemSerialNo,});
 		return row;
 	}
 
 	@Override
 	public List<GSTR1_Invoice> getB2bsByCriteria(String criteria,String value) {
 		List<GSTR1_Invoice> invoices = new ArrayList<GSTR1_Invoice>();
-		invoices = jdbc.query(selectInvoicesSql+"where "+criteria+" = '"+value+"'", new RowMapper<GSTR1_Invoice>(){
+		invoices = jdbc.query(SqlConstants.SELECT_INVOICES_SQL+"where "+criteria+" = '"+value+"'", new RowMapper<GSTR1_Invoice>(){
 
 			@Override
 			public GSTR1_Invoice mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -185,14 +168,14 @@ public class CRUDRepository implements ICRUDRepository {
 	@Override
 	public List<GSTR1_Invoice_Nw> getAllB2bs1(){
 		List<GSTR1_Invoice_Nw> invoices = new ArrayList<GSTR1_Invoice_Nw>();
-		invoices = jdbc.query(selectInvoicesSql1, new BeanPropertyRowMapper<GSTR1_Invoice_Nw>(GSTR1_Invoice_Nw.class));
+		invoices = jdbc.query(SqlConstants.SELECT_INVOICES_SQL1, new BeanPropertyRowMapper<GSTR1_Invoice_Nw>(GSTR1_Invoice_Nw.class));
 		for(GSTR1_Invoice_Nw invoice:invoices)
 		{
 			String invoiceNum = invoice.getInvoice_num();
-			List<InvoiceItemNw> items = jdbc.query(selectInvoicesSql2+" where invoice_num = '"+invoiceNum+"'", new BeanPropertyRowMapper<InvoiceItemNw>(InvoiceItemNw.class));
+			List<InvoiceItemNw> items = jdbc.query(SqlConstants.SELECT_INVOICES_SQL2+" where invoice_num = '"+invoiceNum+"'", new BeanPropertyRowMapper<InvoiceItemNw>(InvoiceItemNw.class));
 			for(InvoiceItemNw item:items)
 			{
-				List<Item> itemDetails= jdbc.query(selectInvoicesSql3,new Object[]{ item.getItem_id()}, new BeanPropertyRowMapper<Item>(Item.class));
+				List<Item> itemDetails= jdbc.query(SqlConstants.SELECT_INVOICES_SQL3,new Object[]{ item.getItem_id()}, new BeanPropertyRowMapper<Item>(Item.class));
 				if(itemDetails.size()>0)
 				{
 					item.setItem_type(itemDetails.get(0).getType());
@@ -207,14 +190,22 @@ public class CRUDRepository implements ICRUDRepository {
 	@Override
 	public List<GSTR1_Invoice_Nw> getB2bsByCriteria1(String criteria, String value) {
 		List<GSTR1_Invoice_Nw> invoices = new ArrayList<GSTR1_Invoice_Nw>();
-		invoices = jdbc.query(selectInvoicesSql1+"where "+criteria+" = '"+value+"'", new BeanPropertyRowMapper<GSTR1_Invoice_Nw>(GSTR1_Invoice_Nw.class));
+		
+		if(criteria.contains("_date"))
+			value = "to_date('"+value+"','dd-MM-yyyy')";
+		else
+			value = "'"+value+"'";
+		
+		String anyCriteiaSql = " WHERE "+criteria+" = "+value;
+		
+		invoices = jdbc.query(SqlConstants.SELECT_INVOICES_SQL1+anyCriteiaSql, new BeanPropertyRowMapper<GSTR1_Invoice_Nw>(GSTR1_Invoice_Nw.class));
 		for(GSTR1_Invoice_Nw invoice:invoices)
 		{
 			String invoiceNum = invoice.getInvoice_num();
-			List<InvoiceItemNw> items = jdbc.query(selectInvoicesSql2+" where invoice_num = '"+invoiceNum+"'", new BeanPropertyRowMapper<InvoiceItemNw>(InvoiceItemNw.class));
+			List<InvoiceItemNw> items = jdbc.query(SqlConstants.SELECT_INVOICES_SQL2+" where invoice_num = '"+invoiceNum+"'", new BeanPropertyRowMapper<InvoiceItemNw>(InvoiceItemNw.class));
 			for(InvoiceItemNw item:items)
 			{
-				List<Item> itemDetails= jdbc.query(selectInvoicesSql3,new Object[]{ item.getItem_id()}, new BeanPropertyRowMapper<Item>(Item.class));
+				List<Item> itemDetails= jdbc.query(SqlConstants.SELECT_INVOICES_SQL3,new Object[]{ item.getItem_id()}, new BeanPropertyRowMapper<Item>(Item.class));
 				if(itemDetails.size()>0)
 				{
 					item.setItem_type(itemDetails.get(0).getType());
@@ -265,7 +256,7 @@ public class CRUDRepository implements ICRUDRepository {
 		invoice.setSgst_amount(totalSgstAmount);
 		invoice.setCess_amount(totalCessAmount);
 		
-		row += jdbc.update(INSERT_B2B_INVOICE_SQL1, new Object[]{invoice.getInvoice_num(),invoice.getInvoice_date(),invoice.getInvoice_value(),
+		row += jdbc.update(SqlConstants.INSERT_B2B_INVOICE_SQL1, new Object[]{invoice.getInvoice_num(),invoice.getInvoice_date(),invoice.getInvoice_value(),
 					invoice.getPlace_of_supply(),invoice.getReverse_charge(),invoice.getProvisional_assessment(),
 					invoice.getOrder_no(),invoice.getOrder_date(),invoice.getE_commerce_gstin(),invoice.getTaxable_value(),
 					invoice.getIgst_amount(),invoice.getCgst_amount(),invoice.getSgst_amount(),
@@ -273,7 +264,7 @@ public class CRUDRepository implements ICRUDRepository {
 		for(InvoiceItemNw item:invoice.getItems())
 		{
 		//invoice_num, serial_no, item_id, taxable_value, igst_rate, igst_amount, cgst_rate, cgst_amount,sgst_rate, sgst_amount,cess_rate,cess_amount 		
-		row += jdbc.update(INSERT_B2B_INVOICE_SQL2, new Object[]{invoice.getInvoice_num(),item.getSerial_no(),item.getItem_type(),item.getHsn_sac_code(),
+		row += jdbc.update(SqlConstants.INSERT_B2B_INVOICE_SQL2, new Object[]{invoice.getInvoice_num(),item.getSerial_no(),item.getItem_type(),item.getHsn_sac_code(),
 				item.getTaxable_value(),item.getIgst_rate(),item.getIgst_amount(),item.getCgst_rate(),item.getCgst_amount(),item.getSgst_rate(),
 				item.getSgst_amount(),item.getCess_rate(),item.getCess_amount()});
 		}
@@ -282,7 +273,7 @@ public class CRUDRepository implements ICRUDRepository {
 
 	@Override
 	public int removeB2b1(String invoiceNum) {
-		int row = jdbc.update(DELETE_B2B_INVOICE_SQL1,new Object[]{invoiceNum});
+		int row = jdbc.update(SqlConstants.DELETE_B2B_INVOICE_SQL1,new Object[]{invoiceNum});
 		return row;
 	}
 
