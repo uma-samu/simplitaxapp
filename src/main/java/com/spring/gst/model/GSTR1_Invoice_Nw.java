@@ -3,8 +3,6 @@ package com.spring.gst.model;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 
@@ -17,8 +15,9 @@ public class GSTR1_Invoice_Nw implements Serializable{
 	private String invoice_num;
 	private int gstr1_id;
 	private String gstin;
-	private String invoice_Date;
-	private Double invoice_Value;
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy")
+	private String invoice_date;
+	private Double invoice_value;
 	private int place_of_supply;
 	private String reverse_charge;
 	private String provisional_assessment;
@@ -51,11 +50,18 @@ public class GSTR1_Invoice_Nw implements Serializable{
 	public void setGstin(String gstin) {
 		this.gstin = gstin;
 	}
-	public String getInvoice_Date() {
-		return invoice_Date;
+	
+	public String getInvoice_date() {
+		return invoice_date;
 	}
-	public void setInvoice_Date(String invoice_Date) {
-		this.invoice_Date = invoice_Date;
+	public void setInvoice_date(String invoice_date) {
+		this.invoice_date = invoice_date;
+	}
+	public Double getInvoice_value() {
+		return invoice_value;
+	}
+	public void setInvoice_value(Double invoice_value) {
+		this.invoice_value = invoice_value;
 	}
 	public String getOrder_date() {
 		return order_date;
@@ -64,12 +70,6 @@ public class GSTR1_Invoice_Nw implements Serializable{
 		this.order_date = order_date;
 	}
 	
-	public Double getInvoice_Value() {
-		return invoice_Value;
-	}
-	public void setInvoice_Value(Double invoice_Value) {
-		this.invoice_Value = invoice_Value;
-	}
 	public int getPlace_of_supply() {
 		return place_of_supply;
 	}

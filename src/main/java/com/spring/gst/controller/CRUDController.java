@@ -83,7 +83,7 @@ public class CRUDController {
 		return new ResponseEntity<ResponseObject>(res,HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/gstr1/b2b",method=RequestMethod.GET)
+	@RequestMapping(value="/gstr1/old/b2b",method=RequestMethod.GET)
 	public ResponseEntity<?> getB2bGstr1Invoice()
 	{
 		List<GSTR1_Invoice> invoices = crudService.getAllB2bs();
@@ -95,7 +95,7 @@ public class CRUDController {
 		return new ResponseEntity<GSTR1InvoiceResponse>(response,HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/gstr1/b2b/filter",method=RequestMethod.GET)
+	@RequestMapping(value="/gstr1/old/b2b/filter",method=RequestMethod.GET)
 	public ResponseEntity<?> getB2bGstr1InvoiceByCriteria(@RequestParam(value="criteria", required=false) String criteria,
 															@RequestParam(value="value", required=false) String value)
 	{
@@ -108,7 +108,7 @@ public class CRUDController {
 		return new ResponseEntity<GSTR1InvoiceResponse>(response,HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/gstr1/b2b/add",method=RequestMethod.POST)
+	@RequestMapping(value="/gstr1/old/b2b/add",method=RequestMethod.POST)
 	public ResponseEntity<?> addB2bGstr1Invoice(@RequestBody GSTR1_Invoice invoice)
 	{
 		int row = crudService.addB2b(invoice);
@@ -120,7 +120,7 @@ public class CRUDController {
 		return new ResponseEntity<GSTR1InvoiceResponse>(response,HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/gstr1/b2b/delete",method=RequestMethod.DELETE)
+	@RequestMapping(value="/gstr1/old/b2b/delete",method=RequestMethod.DELETE)
 	public ResponseEntity<?> deleteB2bGstr1Invoice(@RequestParam(value="invoiceNum",required=true) String invoiceNum,
 													@RequestParam(value="itemSerialNo",required=true) String itemSerialNo)
 	{
@@ -135,7 +135,7 @@ public class CRUDController {
 	
 	//New GSTR1 apis
 	
-	@RequestMapping(value="/gstr1/new/b2b",method=RequestMethod.GET)
+	@RequestMapping(value="/gstr1/b2b",method=RequestMethod.GET)
 	public ResponseEntity<?> getNewB2bGstr1Invoice()
 	{
 		List<GSTR1_Invoice_Nw> invoices = crudService.getAllB2bs1();
@@ -147,9 +147,9 @@ public class CRUDController {
 		return new ResponseEntity<GSTR1InvoiceResponse_Nw>(response,HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/gstr1/new/b2b/filter",method=RequestMethod.GET)
-	public ResponseEntity<?> getNewB2bGstr1InvoiceByCriteria(@RequestParam(value="criteria", required=false) String criteria,
-															@RequestParam(value="value", required=false) String value)
+	@RequestMapping(value="/gstr1/b2b/filter",method=RequestMethod.GET)
+	public ResponseEntity<?> getNewB2bGstr1InvoiceByCriteria(@RequestParam(value="criteria", required=true) String criteria,
+															@RequestParam(value="value", required=true) String value)
 	{
 		List<GSTR1_Invoice_Nw> invoices = crudService.getB2bsByCriteria1(criteria,value);
 		GSTR1InvoiceResponse_Nw response = new GSTR1InvoiceResponse_Nw();
@@ -160,7 +160,7 @@ public class CRUDController {
 		return new ResponseEntity<GSTR1InvoiceResponse_Nw>(response,HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/gstr1/new/b2b/add",method=RequestMethod.POST)
+	@RequestMapping(value="/gstr1/b2b/add",method=RequestMethod.POST)
 	public ResponseEntity<?> addNewB2bGstr1Invoice(@RequestBody GSTR1_Invoice_Nw invoice)
 	{
 		int row = crudService.addB2b1(invoice);
@@ -172,16 +172,22 @@ public class CRUDController {
 		return new ResponseEntity<GSTR1InvoiceResponse_Nw>(response,HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/gstr1/new/b2b/delete",method=RequestMethod.DELETE)
+	@RequestMapping(value="/gstr1/b2b/delete",method=RequestMethod.DELETE)
 	public ResponseEntity<?> deleteNewB2bGstr1Invoice(@RequestParam(value="invoiceNum",required=true) String invoiceNum)
 	{
 		int row = crudService.removeB2b1(invoiceNum);
 		GSTR1InvoiceResponse_Nw response = new GSTR1InvoiceResponse_Nw();
+		HttpStatus status = HttpStatus.NO_CONTENT;
 		if(row>0)
+		{
 			response.setSuccess("true");
+		}
 		else
+		{
 			response.setSuccess("false");
-		return new ResponseEntity<GSTR1InvoiceResponse_Nw>(response,HttpStatus.OK);
+			status = HttpStatus.NOT_FOUND;
+		}
+		return new ResponseEntity<GSTR1InvoiceResponse_Nw>(response,status);
 	}
 	
 	//new GSTR1 end
