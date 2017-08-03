@@ -62,8 +62,8 @@ public class CRUDService implements ICRUDService {
 	}
 
 	@Override
-	public List<GSTR1_Invoice_Nw> getB2bsByCriteria1(String criteria, String value) {
-		return crudRepository.getB2bsByCriteria1(criteria, value);
+	public List<GSTR1_Invoice_Nw> getB2bsByCriteria1(String criteria, String value,String value2) {
+		return crudRepository.getB2bsByCriteria1(criteria, value, value2);
 	}
 
 	@Override

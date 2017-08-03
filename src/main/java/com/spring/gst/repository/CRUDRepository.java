@@ -5,8 +5,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sql.RowSet;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -188,16 +186,27 @@ public class CRUDRepository implements ICRUDRepository {
 	}
 
 	@Override
-	public List<GSTR1_Invoice_Nw> getB2bsByCriteria1(String criteria, String value) {
+	public List<GSTR1_Invoice_Nw> getB2bsByCriteria1(String criteria, String value,String value2) {
+		
 		List<GSTR1_Invoice_Nw> invoices = new ArrayList<GSTR1_Invoice_Nw>();
+		String anyCriteiaSql = "";
 		
-		if(criteria.contains("_date"))
-			value = "to_date('"+value+"','dd-MM-yyyy')";
-		else
-			value = "'"+value+"'";
-		
-		String anyCriteiaSql = " WHERE "+criteria+" = "+value;
-		
+		//invoices submitted within a date range
+		if(criteria.contains("_date") && value2 != null && "".equals(value2))
+		{
+			value = " to_date('"+value+"','dd-MM-yyyy') AND to_date('"+value2+"','dd-MM-yyyy')";
+			
+			anyCriteiaSql = " WHERE "+criteria+" BETWEEN "+value;
+		}
+		else 
+		{
+			//invoices for a particular date
+			if(criteria.contains("_date"))
+				value = "to_date('"+value+"','dd-MM-yyyy')";
+			else
+				value = "'"+value+"'";
+			anyCriteiaSql = " WHERE "+criteria+" = "+value;
+		}
 		invoices = jdbc.query(SqlConstants.SELECT_INVOICES_SQL1+anyCriteiaSql, new BeanPropertyRowMapper<GSTR1_Invoice_Nw>(GSTR1_Invoice_Nw.class));
 		for(GSTR1_Invoice_Nw invoice:invoices)
 		{

@@ -149,9 +149,10 @@ public class CRUDController {
 	
 	@RequestMapping(value="/gstr1/b2b/filter",method=RequestMethod.GET)
 	public ResponseEntity<?> getNewB2bGstr1InvoiceByCriteria(@RequestParam(value="criteria", required=true) String criteria,
-															@RequestParam(value="value", required=true) String value)
+															@RequestParam(value="value", required=true) String value,
+															@RequestParam(value="value2", required=false) String value2)
 	{
-		List<GSTR1_Invoice_Nw> invoices = crudService.getB2bsByCriteria1(criteria,value);
+		List<GSTR1_Invoice_Nw> invoices = crudService.getB2bsByCriteria1(criteria,value,value2);
 		GSTR1InvoiceResponse_Nw response = new GSTR1InvoiceResponse_Nw();
 		
 		response.setSuccess("true");

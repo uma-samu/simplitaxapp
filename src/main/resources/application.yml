@@ -11,5 +11,6 @@ spring:
       password: c3c58dedc95aafc27a8891fa4b93459306240ff7b610344b7b0d5881cab77bed
     dbcp2:
       max-total: 4
-
+      min-idle: 1
+      min-evictable-idle-time-millis: 120000
     

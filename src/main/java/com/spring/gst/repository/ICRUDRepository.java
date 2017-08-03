@@ -18,7 +18,7 @@ public interface ICRUDRepository{
 	
 	//new
 	public List<GSTR1_Invoice_Nw> getAllB2bs1();
-	public List<GSTR1_Invoice_Nw> getB2bsByCriteria1(String criteria,String value);
+	public List<GSTR1_Invoice_Nw> getB2bsByCriteria1(String criteria,String value,String value2);
 	public int addB2b1(GSTR1_Invoice_Nw invoice);
 	public int removeB2b1(String invoiceNum);
 	//new
